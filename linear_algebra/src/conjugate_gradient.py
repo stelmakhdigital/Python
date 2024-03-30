@@ -3,6 +3,7 @@ Resources:
 - https://en.wikipedia.org/wiki/Conjugate_gradient_method
 - https://en.wikipedia.org/wiki/Definite_symmetric_matrix
 """
+
 from typing import Any
 
 import numpy as np
@@ -115,7 +116,6 @@ def conjugate_gradient(
     iterations = 0
 
     while error > tol:
-
         # Save this value so we only calculate the matrix-vector product once.
         w = np.dot(spd_matrix, p0)
 

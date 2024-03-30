@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-    module to operations with prime numbers
+module to operations with prime numbers
 """
 
 import math
@@ -52,7 +52,7 @@ def next_prime(value, factor=1, **kwargs):
     first_value_val = value
 
     while not is_prime(value):
-        value += 1 if not ("desc" in kwargs.keys() and kwargs["desc"] is True) else -1
+        value += 1 if not ("desc" in kwargs and kwargs["desc"] is True) else -1
 
     if value == first_value_val:
         return next_prime(value + 1, **kwargs)

@@ -17,12 +17,13 @@ Github : https://github.com/RiptideBo
 Date: 2017.11.23
 
 """
+
 import numpy as np
 from matplotlib import pyplot as plt
 
 
-def sigmoid(x):
-    return 1 / (1 + np.exp(-1 * x))
+def sigmoid(x: np.ndarray) -> np.ndarray:
+    return 1 / (1 + np.exp(-x))
 
 
 class DenseLayer:
@@ -117,7 +118,7 @@ class BPNN:
 
     def summary(self):
         for i, layer in enumerate(self.layers[:]):
-            print("------- layer %d -------" % i)
+            print(f"------- layer {i} -------")
             print("weight.shape ", np.shape(layer.weight))
             print("bias.shape ", np.shape(layer.bias))
 
@@ -128,7 +129,7 @@ class BPNN:
         self.ax_loss.hlines(self.accuracy, 0, self.train_round * 1.1)
 
         x_shape = np.shape(xdata)
-        for round_i in range(train_round):
+        for _ in range(train_round):
             all_loss = 0
             for row in range(x_shape[0]):
                 _xdata = np.asmatrix(xdata[row, :]).T
@@ -153,6 +154,7 @@ class BPNN:
             if mse < self.accuracy:
                 print("----达到精度----")
                 return mse
+        return None
 
     def cal_loss(self, ydata, ydata_):
         self.loss = np.sum(np.power((ydata - ydata_), 2))

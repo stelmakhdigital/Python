@@ -7,6 +7,7 @@ We try to set the weight of these features, over many iterations, so that they b
 fit our dataset. In this particular code, I had used a CSGO dataset (ADR vs
 Rating). We try to best fit a line through dataset and estimate the parameters.
 """
+
 import numpy as np
 import requests
 
@@ -17,9 +18,8 @@ def collect_dataset():
     :return : dataset obtained from the link, as matrix
     """
     response = requests.get(
-        "https://raw.githubusercontent.com/yashLadha/"
-        + "The_Math_of_Intelligence/master/Week1/ADRvs"
-        + "Rating.csv"
+        "https://raw.githubusercontent.com/yashLadha/The_Math_of_Intelligence/"
+        "master/Week1/ADRvsRating.csv"
     )
     lines = response.text.splitlines()
     data = []
@@ -79,12 +79,22 @@ def run_linear_regression(data_x, data_y):
 
     theta = np.zeros((1, no_features))
 
-    for i in range(0, iterations):
+    for i in range(iterations):
         theta = run_steep_gradient_descent(data_x, data_y, len_data, alpha, theta)
         error = sum_of_square_error(data_x, data_y, len_data, theta)
-        print("At Iteration %d - Error is %.5f " % (i + 1, error))
+        print(f"At Iteration {i + 1} - Error is {error:.5f}")
 
     return theta
+
+
+def mean_absolute_error(predicted_y, original_y):
+    """Return sum of square error for error calculation
+    :param predicted_y   : contains the output of prediction (result vector)
+    :param original_y    : contains values of expected outcome
+    :return          : mean absolute error computed from given feature's
+    """
+    total = sum(abs(y - predicted_y[i]) for i, y in enumerate(original_y))
+    return total / len(original_y)
 
 
 def main():
@@ -98,7 +108,7 @@ def main():
     theta = run_linear_regression(data_x, data_y)
     len_result = theta.shape[1]
     print("Resultant Feature vector : ")
-    for i in range(0, len_result):
+    for i in range(len_result):
         print(f"{theta[0, i]:.5f}")
 
 

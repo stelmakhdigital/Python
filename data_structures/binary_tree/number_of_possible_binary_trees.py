@@ -6,6 +6,7 @@ We will use the formula: t(n) = SUMMATION(i = 1 to n)t(i-1)t(n-i)
 
 Further details at Wikipedia: https://en.wikipedia.org/wiki/Catalan_number
 """
+
 """
 Our Contribution:
 Basically we Create the 2 function:
@@ -67,7 +68,7 @@ def factorial(n: int) -> int:
     True
     >>> factorial(-5)  # doctest: +ELLIPSIS
     Traceback (most recent call last):
-    ...
+        ...
     ValueError: factorial() not defined for negative values
     """
     if n < 0:

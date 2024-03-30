@@ -33,23 +33,20 @@ def interpolation_search(sorted_collection, item):
         current_item = sorted_collection[point]
         if current_item == item:
             return point
+        elif point < left:
+            right = left
+            left = point
+        elif point > right:
+            left = right
+            right = point
+        elif item < current_item:
+            right = point - 1
         else:
-            if point < left:
-                right = left
-                left = point
-            elif point > right:
-                left = right
-                right = point
-            else:
-                if item < current_item:
-                    right = point - 1
-                else:
-                    left = point + 1
+            left = point + 1
     return None
 
 
 def interpolation_search_by_recursion(sorted_collection, item, left, right):
-
     """Pure implementation of interpolation search algorithm in Python by recursion
     Be careful collection must be ascending sorted, otherwise result will be
     unpredictable
@@ -80,15 +77,14 @@ def interpolation_search_by_recursion(sorted_collection, item, left, right):
         return interpolation_search_by_recursion(sorted_collection, item, point, left)
     elif point > right:
         return interpolation_search_by_recursion(sorted_collection, item, right, left)
+    elif sorted_collection[point] > item:
+        return interpolation_search_by_recursion(
+            sorted_collection, item, left, point - 1
+        )
     else:
-        if sorted_collection[point] > item:
-            return interpolation_search_by_recursion(
-                sorted_collection, item, left, point - 1
-            )
-        else:
-            return interpolation_search_by_recursion(
-                sorted_collection, item, point + 1, right
-            )
+        return interpolation_search_by_recursion(
+            sorted_collection, item, point + 1, right
+        )
 
 
 def __assert_sorted(collection):
@@ -101,7 +97,7 @@ def __assert_sorted(collection):
     True
     >>> __assert_sorted([10, -1, 5])
     Traceback (most recent call last):
-    ...
+        ...
     ValueError: Collection must be ascending sorted
     """
     if collection != sorted(collection):
