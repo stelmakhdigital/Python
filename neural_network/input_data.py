@@ -61,9 +61,8 @@ def _extract_images(f):
     with gzip.GzipFile(fileobj=f) as bytestream:
         magic = _read32(bytestream)
         if magic != 2051:
-            raise ValueError(
-                "Invalid magic number %d in MNIST image file: %s" % (magic, f.name)
-            )
+            msg = f"Invalid magic number {magic} in MNIST image file: {f.name}"
+            raise ValueError(msg)
         num_images = _read32(bytestream)
         rows = _read32(bytestream)
         cols = _read32(bytestream)
@@ -102,9 +101,8 @@ def _extract_labels(f, one_hot=False, num_classes=10):
     with gzip.GzipFile(fileobj=f) as bytestream:
         magic = _read32(bytestream)
         if magic != 2049:
-            raise ValueError(
-                "Invalid magic number %d in MNIST label file: %s" % (magic, f.name)
-            )
+            msg = f"Invalid magic number {magic} in MNIST label file: {f.name}"
+            raise ValueError(msg)
         num_items = _read32(bytestream)
         buf = bytestream.read(num_items)
         labels = np.frombuffer(buf, dtype=np.uint8)
@@ -153,17 +151,18 @@ class _DataSet:
         """
         seed1, seed2 = random_seed.get_seed(seed)
         # If op level seed is not set, use whatever graph level seed is returned
-        np.random.seed(seed1 if seed is None else seed2)
+        self._rng = np.random.default_rng(seed1 if seed is None else seed2)
         dtype = dtypes.as_dtype(dtype).base_dtype
         if dtype not in (dtypes.uint8, dtypes.float32):
-            raise TypeError("Invalid image dtype %r, expected uint8 or float32" % dtype)
+            msg = f"Invalid image dtype {dtype!r}, expected uint8 or float32"
+            raise TypeError(msg)
         if fake_data:
             self._num_examples = 10000
             self.one_hot = one_hot
         else:
-            assert (
-                images.shape[0] == labels.shape[0]
-            ), f"images.shape: {images.shape} labels.shape: {labels.shape}"
+            assert images.shape[0] == labels.shape[0], (
+                f"images.shape: {images.shape} labels.shape: {labels.shape}"
+            )
             self._num_examples = images.shape[0]
 
             # Convert shape from [num examples, rows, columns, depth]
@@ -211,7 +210,7 @@ class _DataSet:
         # Shuffle for the first epoch
         if self._epochs_completed == 0 and start == 0 and shuffle:
             perm0 = np.arange(self._num_examples)
-            np.random.shuffle(perm0)
+            self._rng.shuffle(perm0)
             self._images = self.images[perm0]
             self._labels = self.labels[perm0]
         # Go to the next epoch
@@ -225,7 +224,7 @@ class _DataSet:
             # Shuffle the data
             if shuffle:
                 perm = np.arange(self._num_examples)
-                np.random.shuffle(perm)
+                self._rng.shuffle(perm)
                 self._images = self.images[perm]
                 self._labels = self.labels[perm]
             # Start next epoch

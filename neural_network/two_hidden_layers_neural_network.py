@@ -28,19 +28,20 @@ class TwoHiddenLayerNeuralNetwork:
         # Random initial weights are assigned.
         # self.input_array.shape[1] is used to represent number of nodes in input layer.
         # First hidden layer consists of 4 nodes.
-        self.input_layer_and_first_hidden_layer_weights = np.random.rand(
-            self.input_array.shape[1], 4
+        rng = np.random.default_rng()
+        self.input_layer_and_first_hidden_layer_weights = rng.random(
+            (self.input_array.shape[1], 4)
         )
 
         # Random initial values for the first hidden layer.
         # First hidden layer has 4 nodes.
         # Second hidden layer has 3 nodes.
-        self.first_hidden_layer_and_second_hidden_layer_weights = np.random.rand(4, 3)
+        self.first_hidden_layer_and_second_hidden_layer_weights = rng.random((4, 3))
 
         # Random initial values for the second hidden layer.
         # Second hidden layer has 3 nodes.
         # Output layer has 1 node.
-        self.second_hidden_layer_and_output_layer_weights = np.random.rand(3, 1)
+        self.second_hidden_layer_and_output_layer_weights = rng.random((3, 1))
 
         # Real output values provided.
         self.output_array = output_array
@@ -63,7 +64,7 @@ class TwoHiddenLayerNeuralNetwork:
         >>> nn = TwoHiddenLayerNeuralNetwork(input_val, output_val)
         >>> res = nn.feedforward()
         >>> array_sum = np.sum(res)
-        >>> np.isnan(array_sum)
+        >>> bool(np.isnan(array_sum))
         False
         """
         # Layer_between_input_and_first_hidden_layer is the layer connecting the
@@ -104,7 +105,7 @@ class TwoHiddenLayerNeuralNetwork:
         >>> res = nn.feedforward()
         >>> nn.back_propagation()
         >>> updated_weights = nn.second_hidden_layer_and_output_layer_weights
-        >>> (res == updated_weights).all()
+        >>> bool((res == updated_weights).all())
         False
         """
 
@@ -170,7 +171,7 @@ class TwoHiddenLayerNeuralNetwork:
         >>> first_iteration_weights = nn.feedforward()
         >>> nn.back_propagation()
         >>> updated_weights = nn.second_hidden_layer_and_output_layer_weights
-        >>> (first_iteration_weights == updated_weights).all()
+        >>> bool((first_iteration_weights == updated_weights).all())
         False
         """
         for iteration in range(1, iterations + 1):
